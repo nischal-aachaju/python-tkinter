@@ -66,9 +66,9 @@ def login_page():
             login_root.destroy()
             conn.close()
             if record[3] == "Student":
-                student_page()
+                student_page(record[1])
             elif record[3] == "Teacher":
-                teacher_page()
+                teacher_page(record[1])
             
         
         else:
@@ -226,7 +226,7 @@ def login_page():
         root.deiconify() 
     login_root.protocol("WM_DELETE_WINDOW", new_window)
 
-def Navbar():
+def Navbar(root,username):
     #-------------------navbar----------------------
     nav_frame=Frame(root,bg="#23cff2",height=80)
     nav_frame.pack(fill=X)
@@ -256,24 +256,40 @@ def Navbar():
     profile_logo.place(x=720,y=10)
 
     #-------------------profile text----------------------
-    text_profile=Label(nav_frame,text="Nischal ;",font=("Arial",20),bg="#23cff2",fg="black",bd=0)
-    text_profile.place(x=600,y=25)
+    text_profile=Label(nav_frame,text=username+";",font=("Arial",20),bg="#23cff2",fg="black",bd=0)
+    text_profile.place(x=630,y=25)
 
 
-def student_page():
+def student_page(name):
     student_root = Toplevel(root)
     student_root.geometry("800x650")
     student_root.resizable(0, 0)
     student_root.title("Student")
     root.withdraw()
-    # Navbar()
-    Label(student_root,text="Student Dashboard",font=("Arial",24,"bold"),bg="white").pack()
+    Navbar(student_root,name)
+
+
+    # Label(student_root,text="Student Dashboard",font=("Arial",24,"bold"),bg="white").pack()
     def new_window():
         student_root.destroy()
         root.deiconify() 
 
     student_root.protocol("WM_DELETE_WINDOW", new_window)
 
+def teacher_page(name):
+    teacher_root = Toplevel(root)
+    teacher_root.geometry("800x650")
+    teacher_root.resizable(0, 0)
+    teacher_root.title("Teacher")
+    root.withdraw()
+    Navbar(teacher_root,name)
+
+    # Label(teacher_root,text="Teacher Dashboard",font=("Arial",24,"bold"),bg="white").pack()
+    def new_window():
+        teacher_root.destroy()
+        root.deiconify() 
+
+    teacher_root.protocol("WM_DELETE_WINDOW", new_window)
     
 image_bg = Image.open("assects/dashboard.jpg")
 resize_bg =image_bg.resize((800, 600))
@@ -282,8 +298,7 @@ final_bg = ImageTk.PhotoImage(resize_bg)
 lbl = Label(root, image=final_bg)
 lbl.image = final_bg 
 lbl.pack()
-# button=Button(root,text="Login",command=login_page)
-# button.place(x=380,y=393)
+
 button = Label(root,
                     text="Login",
                     fg="white",bg="#00bcd4", cursor="hand2",font=("Arial",16,"bold"))
