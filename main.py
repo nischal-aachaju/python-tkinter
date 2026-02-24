@@ -12,7 +12,7 @@ root.geometry("800x600")
 root.resizable(0,0)
 root.iconbitmap('assects/logo.ico')
 
-def login():
+def login_page():
     login_root = Toplevel(root)
     login_root.geometry("800x650")
     login_root.resizable(0, 0)
@@ -24,15 +24,13 @@ def login():
     cur.execute("""
     CREATE TABLE IF NOT EXISTS users(
         email TEXT PRIMARY KEY,
-        password TEXT,
         name TEXT,
+        password TEXT,
         role TEXT
     )
     """)
-    
-    # cur.execute('''
-    #         DELETE FROM users       
-    #         ''')
+    # to delete all table data
+    # cur.execute("DELETE FROM users")
 
 
     conn.commit()
@@ -75,8 +73,8 @@ def login():
             return
 
         try:
-            cur.execute("INSERT INTO users VALUES(?,?,?,?,?)",
-                        (reg_email.get(), hash_password(reg_password.get()), reg_name.get(), role_var.get()))
+            cur.execute("INSERT INTO users VALUES(?,?,?,?)",
+                        (reg_email.get(),reg_name.get(), hash_password(reg_password.get()),  role_var.get()))
             conn.commit()
             messagebox.showinfo("Success", "Registered Successfully")
             show_frame(login_frame)
@@ -213,9 +211,19 @@ def login():
 
     login_root.protocol("WM_DELETE_WINDOW", new_window)
 
+image_bg = Image.open("assects/dashboard.jpg")
+resize_bg =image_bg.resize((800, 600))
+final_bg = ImageTk.PhotoImage(resize_bg)
 
-button=Button(root,text="Login",command=login)
-button.pack()
+lbl = Label(root, image=final_bg)
+lbl.image = final_bg 
+lbl.pack()
+# button=Button(root,text="Login",command=login_page)
+# button.place(x=380,y=393)
+button = Label(root,
+                    text="Login",
+                    fg="white",bg="#00bcd4", cursor="hand2",font=("Arial",16,"bold"))
+button.place(x=370,y=390)
+button.bind("<Button-1>", lambda e: login_page())
 
 root.mainloop()
-
