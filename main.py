@@ -158,34 +158,34 @@ def login_page():
     Label(register_frame, text="to solve doubt", fg="gray", bg="white").place(x=200,y=65)
 
 
-    Label(register_frame, text="User Name", bg="white",font=("Arial", 16)).place(x=50,y=110)
+    Label(register_frame, text="User Name", bg="white",font=("Arial", 16)).place(x=50,y=100)
     reg_name = Entry(register_frame, width=30, bd=2, relief="groove",font=("Arial", 16))
-    reg_name.place(x=50,y=145)
+    reg_name.place(x=50,y=135)
 
-    Label(register_frame, text="Email", bg="white",font=("Arial", 16)).place(x=50,y=190)
+    Label(register_frame, text="Email", bg="white",font=("Arial", 16)).place(x=50,y=175)
     reg_email = Entry(register_frame, width=30, bd=2, relief="groove",font=("Arial", 16))
-    reg_email.place(x=50,y=225)
+    reg_email.place(x=50,y=210)
 
-    Label(register_frame, text="Password", bg="white",font=("Arial", 16)).place(x=50,y=270)
+    Label(register_frame, text="Password", bg="white",font=("Arial", 16)).place(x=50,y=245)
     reg_password = Entry(register_frame, width=30, show="*", bd=2, relief="groove",font=("Arial", 16))
-    reg_password.place(x=50,y=305)  
+    reg_password.place(x=50,y=275)  
 
     role_var = StringVar()
 
     Radiobutton(register_frame, text="Student", variable=role_var,
-                value="Student", bg="white").place(x=50,y=365)
+                value="Student", bg="white").place(x=50,y=305)
     Radiobutton(register_frame, text="Teacher", variable=role_var,
-                value="Teacher", bg="white").place(x=50,y=340)
+                value="Teacher", bg="white").place(x=50,y=335)
     role_var.set(0)
     Button(register_frame, text="Register", width=27, bg="#00bcd4",
         fg="white", font=("Arial",16,"bold"),
-        command=register).place(x=50,y=400)
+        command=register).place(x=50,y=360)
 
     # Back to login clickable
     back_login_lbl = Label(register_frame,
                         text="Already have account? Login",
-                        fg="blue", bg="white", cursor="hand2")
-    back_login_lbl.place(x=50,y=445)
+                        fg="#0000FF", bg="white", cursor="hand2",font=("arial",13))
+    back_login_lbl.place(x=50,y=410)
     back_login_lbl.bind("<Button-1>", lambda e: show_frame(login_frame))
 
 
@@ -197,25 +197,25 @@ def login_page():
     Label(forgot_frame, text="Reset your password",
         fg="gray", bg="white").place(x=190,y=80)
 
-    Label(forgot_frame, text="Email", bg="white",font=("Arial", 16)).place(x=50,y=140)
+    Label(forgot_frame, text="Email", bg="white",font=("Arial", 16)).place(x=50,y=135)
     forgot_email = Entry(forgot_frame, width=30, bd=2, relief="groove",font=("Arial", 16))
-    forgot_email.place(x=50,y=175)
+    forgot_email.place(x=50,y=170)
     
 
-    Label(forgot_frame, text="New Password", bg="white",font=("Arial", 16)).place(x=50,y=225)
+    Label(forgot_frame, text="New Password", bg="white",font=("Arial", 16)).place(x=50,y=220)
     new_password = Entry(forgot_frame, width=30, show="*", bd=2, relief="groove",font=("Arial", 16))
-    new_password.place(x=50,y=255)
+    new_password.place(x=50,y=250)
 
     Button(forgot_frame, text="Submit", width=27, bg="#00bcd4",
         fg="white", font=("Arial",16,"bold"),
-        command=reset_password).place(x=50,y=310)
+        command=reset_password).place(x=50,y=305)
 
 
     # Back to login clickable 
     forgot_back_lbl = Label(forgot_frame,
                             text="Back to Login",
-                            fg="blue", bg="white", cursor="hand2")
-    forgot_back_lbl.place(x=195,y=360)
+                            fg="blue", bg="white", cursor="hand2",font=("Arial", 10))
+    forgot_back_lbl.place(x=195,y=355)
     forgot_back_lbl.bind("<Button-1>", lambda e: show_frame(login_frame))
 
     # Show login first
