@@ -1,3 +1,5 @@
+from tkinter import Frame
+from tkinter import Label
 from cProfile import label
 from tkinter import *
 import sqlite3
@@ -304,7 +306,7 @@ def student_content(root):
     Enroll.place(x=30,y=115)
     Enroll.bind("<Button-1>", lambda e: login_page())
 
-def teacher_content(root):
+def teacher_content(root,name):
     frame=Frame(root,bg="#E1E9E5",width=750,height=150,bd=2,relief="groove")
     frame.pack_propagate(False)
     frame.pack(pady=10)
@@ -343,7 +345,7 @@ def teacher_content(root):
                     text="Join as tutor",
                     fg="white",bg="#23cff2", cursor="hand2",font=("Arial",12,"bold"),padx=5,pady=2,bd=2,relief="groove")
     Enroll.place(x=30,y=115)
-    Enroll.bind("<Button-1>", lambda e: login_page())
+    Enroll.bind("<Button-1>", lambda e: joining_page(root,name))
 
 
 
@@ -386,15 +388,34 @@ def teacher_page(name):
     teacher_root.title("Teacher")
     root.withdraw()
     Navbar(teacher_root,name)
-    teacher_content(teacher_root)
-    teacher_content(teacher_root)
-    teacher_content(teacher_root)
+    teacher_content(teacher_root,name)
+    teacher_content(teacher_root,name)
+    teacher_content(teacher_root,name)
 
     def new_window():
         teacher_root.destroy()
         root.deiconify() 
 
     teacher_root.protocol("WM_DELETE_WINDOW", new_window)
+
+def joining_page(root,name):
+    join_root=Toplevel(root)
+    join_root.geometry("800x650")
+    join_root.resizable(0, 0)
+    join_root.title("Join")
+    root.withdraw()
+    Navbar(join_root,name)
+
+    frame=Frame(join_root,width=760,height=550,bd=2,relief="groove")
+    frame.place(x=20,y=90)
+    
+
+
+    def new_window():
+        join_root.destroy()
+        root.deiconify()
+    join_root.protocol("WM_DELETE_WINDOW",new_window)
+
     
 image_bg = Image.open("assects/dashboard.jpg")
 resize_bg =image_bg.resize((800, 600))
