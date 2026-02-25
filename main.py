@@ -260,17 +260,21 @@ def Navbar(root,username):
     #-------------------profile text----------------------
     text_profile=Label(nav_frame,text=username+";",font=("Arial",20),bg="#23cff2",fg="black",bd=0)
     text_profile.place(x=625,y=25)
-def student_content(root):
-    frame=Frame(root,bg="#E1E9E5",width=750,height=150,bd=2,relief="groove")
-    frame.pack_propagate(False)
-    frame.pack(pady=10)
-    #-------------------avtar image----------------------
+
+def name_logo(frame):
     avtar_image=Image.open("assects/question.png")
     avtar_image=avtar_image.resize((20,20))
     avtar_imageTk=ImageTk.PhotoImage(avtar_image)
     lbl_logo=Label(frame,image=avtar_imageTk,bd=0)
     lbl_logo.image = avtar_imageTk
     lbl_logo.place(x=28,y=10)
+
+def student_content(root):
+    frame=Frame(root,bg="#E1E9E5",width=750,height=150,bd=2,relief="groove")
+    frame.pack_propagate(False)
+    frame.pack(pady=10)
+    #-------------------avtar image----------------------
+    name_logo(frame)
 
     Label(frame,text="Nischal",font=("Arial",12,"bold"),bg="#E1E9E5").place(x=50,y=10)
     Label(frame,text="Topic: "+"Use of pack_propogate()",font=("Arial",10,"bold"),bg="#E1E9E5").place(x=25,y=40)
@@ -306,18 +310,14 @@ def student_content(root):
     Enroll.place(x=30,y=115)
     Enroll.bind("<Button-1>", lambda e: login_page())
 
+
 def teacher_content(root,name):
     frame=Frame(root,bg="#E1E9E5",width=750,height=150,bd=2,relief="groove")
     frame.pack_propagate(False)
     frame.pack(pady=10)
     #-------------------avtar image----------------------
-    avtar_image=Image.open("assects/question.png")
-    avtar_image=avtar_image.resize((20,20))
-    avtar_imageTk=ImageTk.PhotoImage(avtar_image)
-    lbl_logo=Label(frame,image=avtar_imageTk,bd=0)
-    lbl_logo.image = avtar_imageTk
-    lbl_logo.place(x=28,y=10)
 
+    name_logo(frame)
     Label(frame,text="Nischal",font=("Arial",12,"bold"),bg="#E1E9E5").place(x=50,y=10)
     Label(frame,text="Topic: "+"Use of pack_propogate()",font=("Arial",10,"bold"),bg="#E1E9E5").place(x=25,y=40)
     Label(frame,text="loram hello world If you don't use this line, the frame will shrink\n or expand to perfectlyfit whatever buttons or labels you"+" ......",
@@ -406,10 +406,30 @@ def joining_page(root,name):
     root.withdraw()
     Navbar(join_root,name)
 
+    # -----------main frame-------------
     frame=Frame(join_root,width=760,height=550,bd=2,relief="groove")
     frame.place(x=20,y=90)
-    
 
+    # ---------------student list frame----------------
+    enrolled_frame=Frame(frame,width=200,height=400)
+    enrolled_frame.place(x=550,y=20)
+    Label(enrolled_frame,text="👨🏽‍🎓"+"Enrolled Students",font=("Arial",14,),bg="#E1E9E5").place(x=10,y=20)
+    Label(enrolled_frame,text="• "+"Name1",font=("Arial",12,)).place(x=30,y=50)
+    Label(enrolled_frame,text="• "+"Name2",font=("Arial",12,)).place(x=30,y=80)
+    Label(enrolled_frame,text="• "+"Name3",font=("Arial",12,)).place(x=30,y=110)
+    Label(enrolled_frame,text="• "+"Name4",font=("Arial",12,)).place(x=30,y=140)
+
+
+    name_logo(frame)    
+    Label(frame,text="Nischal",font=("Arial",16,"bold"),bg="#E1E9E5",padx=5,pady=2).place(x=50,y=8)
+    Label(frame,text="Topic: "+"Use of pack_propogate()",font=("Arial",14,"bold"),bg="#E1E9E5").place(x=25,y=80)
+    Label(frame,text="loram hello world If you don't use this line, the frame will shrink\n or expand to perfectlyfit whatever buttons or labels you",
+        font=("Arial",12),
+        bg="#E1E9E5",
+        justify="left"
+        ).place(x=25,y=120)
+    join_btn=Label(frame,text="JOIN",font=("Arial",16,"bold"),bg="#f1f1f1",cursor="hand2",bd=2,relief="ridge",padx=5,pady=2,).place(x=350,y=450)
+    join_btn.bind("<Button-1>", lambda e: login_page())
 
     def new_window():
         join_root.destroy()
