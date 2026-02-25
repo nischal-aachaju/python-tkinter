@@ -175,7 +175,7 @@ def login_page():
     Radiobutton(register_frame, text="Student", variable=role_var,
                 value="Student", bg="white").place(x=50,y=305)
     Radiobutton(register_frame, text="Teacher", variable=role_var,
-                value="Teacher", bg="white").place(x=50,y=335)
+                value="Teacher", bg="white").place(x=50,y=325)
     role_var.set(0)
     Button(register_frame, text="Register", width=27, bg="#00bcd4",
         fg="white", font=("Arial",16,"bold"),
@@ -257,7 +257,52 @@ def Navbar(root,username):
 
     #-------------------profile text----------------------
     text_profile=Label(nav_frame,text=username+";",font=("Arial",20),bg="#23cff2",fg="black",bd=0)
-    text_profile.place(x=630,y=25)
+    text_profile.place(x=625,y=25)
+def content(root):
+    frame=Frame(root,bg="#E1E9E5",width=750,height=150,bd=2,relief="groove")
+    frame.pack_propagate(False)
+    frame.pack(pady=10)
+    #-------------------avtar image----------------------
+    avtar_image=Image.open("assects/question.png")
+    avtar_image=avtar_image.resize((20,20))
+    avtar_imageTk=ImageTk.PhotoImage(avtar_image)
+    lbl_logo=Label(frame,image=avtar_imageTk,bd=0)
+    lbl_logo.image = avtar_imageTk
+    lbl_logo.place(x=28,y=10)
+
+    Label(frame,text="Nischal",font=("Arial",12,"bold"),bg="#E1E9E5").place(x=50,y=10)
+    Label(frame,text="Topic: "+"Use of pack_propogate()",font=("Arial",10,"bold"),bg="#E1E9E5").place(x=25,y=40)
+    Label(frame,text="loram hello world If you don't use this line, the frame will shrink\n or expand to perfectlyfit whatever buttons or labels you"+" ......",
+            font=("Arial",10),
+            bg="#E1E9E5",
+            justify="left"
+            ).place(x=25,y=60)
+    Volunteer = Label(frame,
+                    text="Volunteer",
+                    bd=2,relief="groove",
+                    fg="white",bg="#23cff2", cursor="hand2",font=("Arial",12,"bold"),padx=5,pady=2)
+    Volunteer.place(x=30,y=110)
+    Volunteer.bind("<Button-1>", lambda e: login_page())
+    Teacher = Label(frame,
+                    text="Teacher_name",
+                    bd=2,relief="groove",
+                    fg="white",bg="#23cff2", cursor="hand2",font=("Arial",12,"bold"),padx=5,pady=2)
+    Teacher.place(x=130,y=110)
+    Teacher.bind("<Button-1>", lambda e: login_page())
+
+    frame2=Frame(frame,bg="#E1E9E5",width=200,height=145)
+    frame2.place(x=545,y=0) 
+    Label(frame2,text="👨🏽‍🎓"+"Enrolled Students",font=("Arial",12,),bg="#E1E9E5").place(x=10,y=10)
+    Label(frame2,text="• "+"Name1",font=("Arial",10,),bg="#E1E9E5").place(x=30,y=30)
+    Label(frame2,text="• "+"Name2",font=("Arial",10,),bg="#E1E9E5").place(x=30,y=50)
+    Label(frame2,text="• "+"Name3",font=("Arial",10,),bg="#E1E9E5").place(x=30,y=70)
+    Label(frame2,text="• "+"Name4",font=("Arial",10,),bg="#E1E9E5").place(x=30,y=90)
+
+    Enroll = Label(frame2,
+                    text="Enroll Now",
+                    fg="white",bg="#23cff2", cursor="hand2",font=("Arial",12,"bold"),padx=5,pady=2,bd=2,relief="groove")
+    Enroll.place(x=30,y=115)
+    Enroll.bind("<Button-1>", lambda e: login_page())
 
 
 def student_page(name):
@@ -268,8 +313,24 @@ def student_page(name):
     root.withdraw()
     Navbar(student_root,name)
 
+    #-------------------student page content----------------------
+    student_frame = Frame(student_root, bg="#f2f2f2", width=800, height=650)
+    student_frame.pack_propagate(False)
+    student_frame.pack()
+    Label(student_frame,text="Welcome;",font=("Arial",12,"bold"),bg="#f2f2f2").place(x=20,y=10)
+    Label(student_frame,text="Do you have any doubts?",font=("Arial",10,),bg="#f2f2f2").place(x=470,y=14)
+    button = Label(student_frame,
+                    text="Post doubts here",
+                    fg="white",bg="#00bcd4", cursor="hand2",font=("Arial",12,"bold"),padx=5,pady=2)
+    button.place(x=625,y=10)
+    button.bind("<Button-1>", lambda e: login_page())
+    data_frame=Frame(student_frame,width=750,height=500)
+ 
+    data_frame.place(x=20,y=40)
+    content(data_frame)
+    content(data_frame)
+    content(data_frame)
 
-    # Label(student_root,text="Student Dashboard",font=("Arial",24,"bold"),bg="white").pack()
     def new_window():
         student_root.destroy()
         root.deiconify() 
