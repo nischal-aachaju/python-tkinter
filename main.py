@@ -77,6 +77,9 @@ def login_page():
 
     # ---------------- REGISTER FUNCTION ----------------
     def register():
+        if reg_password.get() != reg_con_password.get():
+            messagebox.showwarning("Error", "Passwords do not match")
+            return
         if not reg_email.get() or not reg_password.get() or not role_var.get():
             messagebox.showwarning("Error", "All fields are required")
             return
@@ -153,38 +156,42 @@ def login_page():
 # ---------------- REGISTER FRAME ----------------
     register_frame = Frame(login_root, bg="white", width=500, height=480)
 
-    Label(register_frame, text="Register", font=("Arial", 24, "bold"), bg="white").place(x=180,y=20)     
-    Label(register_frame, text="to solve doubt", fg="gray", bg="white").place(x=200,y=65)
+    Label(register_frame, text="Register", font=("Arial", 24, "bold"), bg="white").place(x=180,y=18)     
+    Label(register_frame, text="to solve doubt", fg="gray", bg="white").place(x=200,y=60)
 
 
-    Label(register_frame, text="User Name", bg="white",font=("Arial", 16)).place(x=50,y=100)
+    Label(register_frame, text="User Name", bg="white",font=("Arial", 16)).place(x=50,y=90)
     reg_name = Entry(register_frame, width=30, bd=2, relief="groove",font=("Arial", 16))
-    reg_name.place(x=50,y=135)
+    reg_name.place(x=50,y=120)
 
-    Label(register_frame, text="Email", bg="white",font=("Arial", 16)).place(x=50,y=175)
+    Label(register_frame, text="Email", bg="white",font=("Arial", 16)).place(x=50,y=155)
     reg_email = Entry(register_frame, width=30, bd=2, relief="groove",font=("Arial", 16))
-    reg_email.place(x=50,y=210)
+    reg_email.place(x=50,y=185)
 
-    Label(register_frame, text="Password", bg="white",font=("Arial", 16)).place(x=50,y=245)
+    Label(register_frame, text="Password", bg="white",font=("Arial", 16)).place(x=50,y=215)
     reg_password = Entry(register_frame, width=30, show="*", bd=2, relief="groove",font=("Arial", 16))
-    reg_password.place(x=50,y=275)  
+    reg_password.place(x=50,y=245)  
+
+    Label(register_frame, text="Confirm Password", bg="white",font=("Arial", 16)).place(x=50,y=275)
+    reg_con_password = Entry(register_frame, width=30, show="*", bd=2, relief="groove",font=("Arial", 16))
+    reg_con_password.place(x=50,y=305) 
 
     role_var = StringVar()
 
     Radiobutton(register_frame, text="Student", variable=role_var,
-                value="Student", bg="white").place(x=50,y=305)
+                value="Student", bg="white").place(x=50,y=335)
     Radiobutton(register_frame, text="Teacher", variable=role_var,
-                value="Teacher", bg="white").place(x=50,y=325)
-    role_var.set(0)
+                value="Teacher", bg="white").place(x=50,y=355)
+    role_var.set("Student")
     Button(register_frame, text="Register", width=27, bg="#00bcd4",
         fg="white", font=("Arial",16,"bold"),
-        command=register).place(x=50,y=360)
+        command=register).place(x=50,y=380)
 
     # Back to login clickable
     back_login_lbl = Label(register_frame,
                         text="Already have account? Login",
                         fg="#0000FF", bg="white", cursor="hand2",font=("arial",13))
-    back_login_lbl.place(x=50,y=410)
+    back_login_lbl.place(x=50,y=430)
     back_login_lbl.bind("<Button-1>", lambda e: show_frame(login_frame))
 
 
