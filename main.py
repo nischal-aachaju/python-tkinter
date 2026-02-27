@@ -26,7 +26,8 @@ def login_page():
         email TEXT PRIMARY KEY,
         name TEXT,
         password TEXT,
-        role TEXT
+        role TEXT,
+        security_password TEXT
     )
     """)
     # to delete all table data
@@ -80,13 +81,13 @@ def login_page():
         if reg_password.get() != reg_con_password.get():
             messagebox.showwarning("Error", "Passwords do not match")
             return
-        if not reg_email.get() or not reg_password.get() or not role_var.get():
+        if not reg_email.get() or not reg_password.get() or not role_var.get() or not security_password.get():
             messagebox.showwarning("Error", "All fields are required")
-            return
+            return 
 
         try:
-            cur.execute("INSERT INTO users VALUES(?,?,?,?)",
-                        (reg_email.get(),reg_name.get(), hash_password(reg_password.get()),  role_var.get()))
+            cur.execute("INSERT INTO users VALUES(?,?,?,?,?)",
+                        (reg_email.get(),reg_name.get(), hash_password(reg_password.get()),  role_var.get(),security_password.get()))
             conn.commit()
             messagebox.showinfo("Success", "Registered Successfully")
             show_frame(login_frame)
@@ -175,6 +176,11 @@ def login_page():
     Label(register_frame, text="Confirm Password", bg="white",font=("Arial", 16)).place(x=50,y=275)
     reg_con_password = Entry(register_frame, width=30, show="*", bd=2, relief="groove",font=("Arial", 16))
     reg_con_password.place(x=50,y=305) 
+
+    Label(register_frame, text="Security Password:", bg="white",font=("Arial", 10)).place(x=130,y=355)
+    Label(register_frame, text="favouraite pet name?", bg="white",font=("Arial", 10)).place(x=255,y=335)
+    security_password = Entry(register_frame, width=20,bd=2, relief="groove",font=("Arial", 10))
+    security_password.place(x=250,y=355)
 
     role_var = StringVar()
 
@@ -464,7 +470,7 @@ lbl.pack()
 
 button = Label(root,
                     text="Login",
-                    fg="white",bg="#00bcd4", cursor="hand2",font=("Arial",16,"bold"))
+                    fg="white",bg="#72dae4", cursor="hand2",font=("Arial",16,"bold"))
 button.place(x=370,y=390)
 button.bind("<Button-1>", lambda e: login_page())
 
