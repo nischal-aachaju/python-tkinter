@@ -103,6 +103,12 @@ def login_page():
         cur.execute("SELECT * FROM users WHERE email=?", (forgot_email.get(),))
         record = cur.fetchone()
 
+        if not forgot_security_password.get():
+            messagebox.showwarning("Error", "Security Password required")
+            return
+        if forgot_security_password.get() != record[4]:
+            messagebox.showerror("Error", "Security Password not matched")
+            return
         if record:
             cur.execute("UPDATE users SET password=? WHERE email=?",
                         (hash_password(new_password.get()), forgot_email.get()))
@@ -218,16 +224,21 @@ def login_page():
     new_password = Entry(forgot_frame, width=30, show="*", bd=2, relief="groove",font=("Arial", 16))
     new_password.place(x=50,y=250)
 
+    Label(forgot_frame, text="Security Password:", bg="white",font=("Arial", 16)).place(x=50,y=305)
+    forgot_security_password = Entry(forgot_frame, width=30,show="*",bd=2, relief="groove",font=("Arial", 16))
+    forgot_security_password.place(x=50,y=335)
+
+
     Button(forgot_frame, text="Submit", width=27, bg="#00bcd4",
         fg="white", font=("Arial",16,"bold"),
-        command=reset_password).place(x=50,y=305)
+        command=reset_password).place(x=50,y=380)
 
 
     # Back to login clickable 
     forgot_back_lbl = Label(forgot_frame,
                             text="Back to Login",
                             fg="blue", bg="white", cursor="hand2",font=("Arial", 10))
-    forgot_back_lbl.place(x=195,y=355)
+    forgot_back_lbl.place(x=195,y=430)
     forgot_back_lbl.bind("<Button-1>", lambda e: show_frame(login_frame))
 
     # Show login first
