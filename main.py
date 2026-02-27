@@ -1,6 +1,3 @@
-from tkinter import Frame
-from tkinter import Label
-from cProfile import label
 from tkinter import *
 import sqlite3
 from PIL import Image, ImageTk
@@ -255,11 +252,24 @@ def Navbar(root,username):
     image_profileTk=ImageTk.PhotoImage(image_profile)
     profile_logo=Label(nav_frame,image=image_profileTk,bd=0)
     profile_logo.image = image_profileTk
-    profile_logo.place(x=720,y=10)
+    profile_logo.place(x=680,y=10)
 
     #-------------------profile text----------------------
     text_profile=Label(nav_frame,text=username+";",font=("Arial",20),bg="#23cff2",fg="black",bd=0)
-    text_profile.place(x=625,y=25)
+    text_profile.place(x=580,y=25)
+
+    #-------------------logout button----------------------
+    image_logout=Image.open("assects/logout.png")
+    image_logout=image_logout.resize((40,40))
+    image_logoutTk=ImageTk.PhotoImage(image_logout)
+    logout_logo=Label(nav_frame,image=image_logoutTk,bd=0)
+    logout_logo.image = image_logoutTk
+    logout_logo.place(x=750,y=20)
+    logout_logo.bind("<Button-1>", lambda e: new_window())
+
+    def new_window():
+        root.destroy()
+        login_page()
 
 def name_logo(frame):
     avtar_image=Image.open("assects/question.png")
