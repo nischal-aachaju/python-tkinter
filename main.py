@@ -485,4 +485,5 @@ button = Label(root,
 button.place(x=370,y=390)
 button.bind("<Button-1>", lambda e: login_page())
 
+print("hello")
 root.mainloop()
