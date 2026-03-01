@@ -7,7 +7,7 @@ import hashlib
 conn=sqlite3.connect("cdrs.db")
 cur=conn.cursor()
 
-root =Tk()
+root=Tk()
 root.geometry("800x600")
 root.resizable(0,0)
 root.iconbitmap('assects/logo.ico')
@@ -304,30 +304,24 @@ def name_logo(frame):
     lbl_logo.image = avtar_imageTk
     lbl_logo.place(x=28,y=10)
 
-def student_content(root):
+def student_content(root, name, parent):  # add name, parent
     frame=Frame(root,bg="#E1E9E5",width=750,height=150,bd=2,relief="groove")
     frame.pack_propagate(False)
     frame.pack(pady=10)
-    #-------------------avtar image----------------------
     name_logo(frame)
 
     Label(frame,text="Nischal",font=("Arial",12,"bold"),bg="#E1E9E5").place(x=50,y=10)
     Label(frame,text="Topic: "+"Use of pack_propogate()",font=("Arial",10,"bold"),bg="#E1E9E5").place(x=25,y=40)
     Label(frame,text="loram hello world If you don't use this line, the frame will shrink\n or expand to perfectlyfit whatever buttons or labels you"+" ......",
-            font=("Arial",10),
-            bg="#E1E9E5",
-            justify="left"
-            ).place(x=25,y=60)
-    Volunteer = Label(frame,
-                    text="Volunteer",
-                    bd=2,relief="groove",
-                    fg="white",bg="#23cff2", cursor="hand2",font=("Arial",12,"bold"),padx=5,pady=2)
+            font=("Arial",10), bg="#E1E9E5", justify="left").place(x=25,y=60)
+
+    Volunteer = Label(frame, text="Volunteer", bd=2, relief="groove",
+                    fg="white", bg="#23cff2", cursor="hand2", font=("Arial",12,"bold"), padx=5, pady=2)
     Volunteer.place(x=30,y=110)
     Volunteer.bind("<Button-1>", lambda e: login_page())
-    Teacher = Label(frame,
-                    text="Teacher_name",
-                    bd=2,relief="groove",
-                    fg="white",bg="#23cff2", cursor="hand2",font=("Arial",12,"bold"),padx=5,pady=2)
+
+    Teacher = Label(frame, text="Teacher_name", bd=2, relief="groove",
+                    fg="white", bg="#23cff2", cursor="hand2", font=("Arial",12,"bold"), padx=5, pady=2)
     Teacher.place(x=130,y=110)
     Teacher.bind("<Button-1>", lambda e: login_page())
 
@@ -339,14 +333,38 @@ def student_content(root):
     Label(frame2,text="• "+"Name3",font=("Arial",10,),bg="#E1E9E5").place(x=30,y=70)
     Label(frame2,text="• "+"Name4",font=("Arial",10,),bg="#E1E9E5").place(x=30,y=90)
 
-    Enroll = Label(frame2,
-                    text="Enroll Now",
-                    fg="white",bg="#23cff2", cursor="hand2",font=("Arial",12,"bold"),padx=5,pady=2,bd=2,relief="groove")
+    Enroll = Label(frame2, text="Enroll Now", fg="white", bg="#23cff2", cursor="hand2",
+                    font=("Arial",12,"bold"), padx=5, pady=2, bd=2, relief="groove")
     Enroll.place(x=30,y=115)
-    Enroll.bind("<Button-1>", lambda e: login_page())
+    Enroll.bind("<Button-1>", lambda e: joining_page(parent, name))  
 
+def teacher_content(root, name, parent):  # add parent
+    frame=Frame(root,bg="#E1E9E5",width=750,height=150,bd=2,relief="groove")
+    frame.pack_propagate(False)
+    frame.pack(pady=10)
+    name_logo(frame)
+    Label(frame,text="Nischal",font=("Arial",12,"bold"),bg="#E1E9E5").place(x=50,y=10)
+    Label(frame,text="Topic: "+"Use of pack_propogate()",font=("Arial",10,"bold"),bg="#E1E9E5").place(x=25,y=40)
+    Label(frame,text="loram hello world If you don't use this line, the frame will shrink\n or expand to perfectlyfit whatever buttons or labels you"+" ......",
+            font=("Arial",10), bg="#E1E9E5", justify="left").place(x=25,y=60)
 
-def teacher_content(root,name):
+    Volunteer = Label(frame, text="Volunteer _name", bd=2, relief="groove",
+                    fg="white", bg="#23cff2", cursor="hand2", font=("Arial",12,"bold"), padx=5, pady=2)
+    Volunteer.place(x=30,y=110)
+    Volunteer.bind("<Button-1>", lambda e: joining_page(parent, name)) 
+
+    frame2=Frame(frame,bg="#E1E9E5",width=200,height=145)
+    frame2.place(x=545,y=0) 
+    Label(frame2,text="👨🏽‍🎓"+"Enrolled Students",font=("Arial",12,),bg="#E1E9E5").place(x=10,y=10)
+    Label(frame2,text="• "+"Name1",font=("Arial",10,),bg="#E1E9E5").place(x=30,y=30)
+    Label(frame2,text="• "+"Name2",font=("Arial",10,),bg="#E1E9E5").place(x=30,y=50)
+    Label(frame2,text="• "+"Name3",font=("Arial",10,),bg="#E1E9E5").place(x=30,y=70)
+    Label(frame2,text="• "+"Name4",font=("Arial",10,),bg="#E1E9E5").place(x=30,y=90)
+
+    Enroll = Label(frame2, text="Join as tutor", fg="white", bg="#23cff2", cursor="hand2",
+                    font=("Arial",12,"bold"), padx=5, pady=2, bd=2, relief="groove")
+    Enroll.place(x=30,y=115)
+    Enroll.bind("<Button-1>", lambda e: joining_page(parent, name))  
     frame=Frame(root,bg="#E1E9E5",width=750,height=150,bd=2,relief="groove")
     frame.pack_propagate(False)
     frame.pack(pady=10)
@@ -447,25 +465,24 @@ def student_page(name):
     student_root.resizable(0, 0)
     student_root.title("Student")
     root.withdraw()
-    Navbar(student_root,name)
+    Navbar(student_root, name)
 
-    #-------------------student page content----------------------
     student_frame = Frame(student_root, bg="#f2f2f2", width=800, height=650)
     student_frame.pack_propagate(False)
     student_frame.pack()
     Label(student_frame,text="Welcome;",font=("Arial",12,"bold"),bg="#f2f2f2").place(x=20,y=10)
     Label(student_frame,text="Do you have any doubts?",font=("Arial",10,),bg="#f2f2f2").place(x=470,y=14)
-    button = Label(student_frame,
-                    text="Post doubts here",
-                    fg="white",bg="#00bcd4", cursor="hand2",font=("Arial",12,"bold"),padx=5,pady=2)
+    button = Label(student_frame, text="Post doubts here", fg="white", bg="#00bcd4",
+                    cursor="hand2", font=("Arial",12,"bold"), padx=5, pady=2)
     button.place(x=625,y=10)
     button.bind("<Button-1>", lambda e: post_page(name))
+
     data_frame=Frame(student_frame,width=750,height=500)
- 
     data_frame.place(x=20,y=40)
-    student_content(data_frame)
-    student_content(data_frame)
-    student_content(data_frame)
+
+    student_content(data_frame, name, student_root)  
+    student_content(data_frame, name, student_root)
+    student_content(data_frame, name, student_root)
 
     def new_window():
         student_root.destroy()
@@ -479,54 +496,17 @@ def teacher_page(name):
     teacher_root.resizable(0, 0)
     teacher_root.title("Teacher")
     root.withdraw()
-    Navbar(teacher_root,name)
-    teacher_content(teacher_root,name)
-    teacher_content(teacher_root,name)
-    teacher_content(teacher_root,name)
+    Navbar(teacher_root, name)
+    teacher_content(teacher_root, name, teacher_root) 
+    teacher_content(teacher_root, name, teacher_root)
+    teacher_content(teacher_root, name, teacher_root)
 
     def new_window():
         teacher_root.destroy()
-        root.deiconify() 
+        root.deiconify()
 
     teacher_root.protocol("WM_DELETE_WINDOW", new_window)
 
-def joining_pages(root,name):
-    join_root=Toplevel(root)
-    join_root.geometry("800x650")
-    join_root.resizable(0, 0)
-    join_root.title("Join")
-    root.withdraw()
-    Navbar(join_root,name)
-
-    # -----------main frame-------------
-    frame=Frame(join_root,width=760,height=550,bd=2,relief="groove")
-    frame.place(x=20,y=90)
-
-    # ---------------student list frame----------------
-    enrolled_frame=Frame(frame,width=200,height=400)
-    enrolled_frame.place(x=550,y=20)
-    Label(enrolled_frame,text="👨🏽‍🎓"+"Enrolled Students",font=("Arial",14,),bg="#E1E9E5").place(x=10,y=20)
-    Label(enrolled_frame,text="• "+"Name1",font=("Arial",12,)).place(x=30,y=50)
-    Label(enrolled_frame,text="• "+"Name2",font=("Arial",12,)).place(x=30,y=80)
-    Label(enrolled_frame,text="• "+"Name3",font=("Arial",12,)).place(x=30,y=110)
-    Label(enrolled_frame,text="• "+"Name4",font=("Arial",12,)).place(x=30,y=140)
-
-
-    name_logo(frame)    
-    Label(frame,text="Nischal",font=("Arial",16,"bold"),bg="#E1E9E5",padx=5,pady=2).place(x=50,y=8)
-    Label(frame,text="Topic: "+"Use of pack_propogate()",font=("Arial",14,"bold"),bg="#E1E9E5").place(x=25,y=80)
-    Label(frame,text="loram hello world If you don't use this line, the frame will shrink\n or expand to perfectlyfit whatever buttons or labels you",
-        font=("Arial",12),
-        bg="#E1E9E5",
-        justify="left"
-        ).place(x=25,y=120)
-    join_btn=Label(frame,text="JOIN",font=("Arial",16,"bold"),bg="#f1f1f1",cursor="hand2",bd=2,relief="ridge",padx=5,pady=2,).place(x=350,y=450)
-    join_btn.bind("<Button-1>", lambda e: login_page())
-
-    def new_window():
-        join_root.destroy()
-        root.deiconify()
-    join_root.protocol("WM_DELETE_WINDOW",new_window)
 
 def joining_page(root, name):
     join_root = Toplevel(root)
@@ -585,10 +565,6 @@ def joining_page(root, name):
     # block_menu.place(x=30, y=320, width=235, height=40)
     block_menu.place(x=30, y=320, height=40)
 
-    # Date/Time Entry
-    time_entry = Entry(main_frame, font=("Arial", 12), width=25, bd=1, relief="solid", bg="#f2f2f2")
-    time_entry.insert(0, "2026/01/25 ( 12:00 PM)")
-    time_entry.place(x=30, y=380, height=40)
 
     enrolled_frame = Frame(main_frame, bg="#f2f2f2", width=220, height=350, bd=1, relief="solid")
     enrolled_frame.place(x=510, y=30)
