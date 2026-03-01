@@ -276,6 +276,7 @@ def Navbar(root,username):
     image_profileTk=ImageTk.PhotoImage(image_profile)
     profile_logo=Label(nav_frame,image=image_profileTk,bd=0)
     profile_logo.image = image_profileTk
+    profile_logo.bind("<Button-1>", lambda e: profile_page(username)) # profile
     profile_logo.place(x=680,y=10)
 
     #-------------------profile text----------------------
@@ -380,9 +381,66 @@ def teacher_content(root,name):
                     fg="white",bg="#23cff2", cursor="hand2",font=("Arial",12,"bold"),padx=5,pady=2,bd=2,relief="groove")
     Enroll.place(x=30,y=115)
     Enroll.bind("<Button-1>", lambda e: joining_page(root,name))
+def profile_page(name):
+    profile_root = Toplevel(root)
+    profile_root.title("Profile")
+    profile_root.geometry("800x600")
+    profile_root.resizable(0, 0)
+    root.withdraw()
+    Navbar(profile_root, name)
+    Label(profile_root, text=f"User Profile: {name}", font=("Arial", 20, "bold")).pack(pady=20)
 
+    def on_close():
+        profile_root.destroy()
+        root.deiconify() 
 
+    profile_root.protocol("WM_DELETE_WINDOW", on_close)   
 
+def post_page(name):
+    post_root = Toplevel(root)
+    post_root.title("Post")
+    post_root.geometry("800x600")
+    post_root.resizable(0, 0)
+    post_root.configure(bg="#f2f2f2") 
+    root.withdraw()
+    
+    Navbar(post_root, name)
+
+    # --- Title Section ---
+    Label(post_root, text="Title", font=("Arial", 16), bg="#f2f2f2").place(x=50, y=100)
+    title_entry = Entry(post_root, font=("Arial", 14), width=30, bd=1, relief="solid")
+    title_entry.place(x=50, y=135)
+
+    # --- Description Section ---
+    Label(post_root, text="Description", font=("Arial", 16), bg="#f2f2f2").place(x=50, y=190)
+    # Using Text widget instead of Entry for multi-line description
+    description_entry = Text(post_root, font=("Arial", 12), width=60, height=10, bd=1, relief="solid")
+    description_entry.place(x=50, y=225)
+
+    # --- Post Button ---
+ 
+    post_btn = Label(
+        post_root, 
+        text="Post now  +", 
+        font=("Arial", 16, "bold"), 
+        bg="#23cff2", 
+        fg="white",
+        padx=20, 
+        pady=10,
+        cursor="hand2",
+        bd=1,
+        relief="solid"
+    )
+    post_btn.place(x=50, y=450)
+    
+
+    post_btn.bind("<Button-1>", lambda e: print("Post Logic Here"))
+
+    def on_close():
+        post_root.destroy()
+        root.deiconify()
+        
+    post_root.protocol("WM_DELETE_WINDOW", on_close)
 def student_page(name):
     student_root = Toplevel(root)
     student_root.geometry("800x650")
@@ -401,7 +459,7 @@ def student_page(name):
                     text="Post doubts here",
                     fg="white",bg="#00bcd4", cursor="hand2",font=("Arial",12,"bold"),padx=5,pady=2)
     button.place(x=625,y=10)
-    button.bind("<Button-1>", lambda e: login_page())
+    button.bind("<Button-1>", lambda e: post_page(name))
     data_frame=Frame(student_frame,width=750,height=500)
  
     data_frame.place(x=20,y=40)
@@ -432,7 +490,7 @@ def teacher_page(name):
 
     teacher_root.protocol("WM_DELETE_WINDOW", new_window)
 
-def joining_page(root,name):
+def joining_pages(root,name):
     join_root=Toplevel(root)
     join_root.geometry("800x650")
     join_root.resizable(0, 0)
@@ -470,7 +528,98 @@ def joining_page(root,name):
         root.deiconify()
     join_root.protocol("WM_DELETE_WINDOW",new_window)
 
+def joining_page(root, name):
+    join_root = Toplevel(root)
+    join_root.geometry("800x650")
+    join_root.resizable(0, 0)
+    join_root.title("Join Session")
+    join_root.configure(bg="white")
+    root.withdraw()
     
+    Navbar(join_root, name)
+
+    # Main Container Frame
+    # Using a flat background with a light border to match the clean UI
+    main_frame = Frame(join_root, bg="white", width=760, height=540)
+    main_frame.place(x=20, y=100)
+
+    name_logo(main_frame)  # Uses your existing name_logo function
+    Label(main_frame, text="Nischal", font=("Arial", 14, "bold"), bg="white").place(x=60, y=8)
+
+
+    title_entry = Entry(main_frame, font=("Arial", 12), width=45, bd=1, relief="solid", bg="#f2f2f2")
+    title_entry.insert(0, "Python") # Placeholder
+    title_entry.place(x=30, y=80, height=40)
+
+    # Description Text (Larger box)
+    desc_text = Text(main_frame, font=("Arial", 11), width=45, height=8, bd=1, relief="solid", bg="white")
+    desc_text.insert("1.0", "Lorem Ipsum is simply dummy text of the printing and typesetting industry...")
+    desc_text.place(x=30, y=140)
+
+
+    global clicked_block
+    clicked_block = StringVar(value="Block-E Seminar hall") # Default value
+
+  
+    Label(main_frame, text="Select Location:", font=("Arial", 10), bg="white").place(x=30, y=295)
+
+
+    block_menu = OptionMenu(
+        main_frame, 
+        clicked_block, 
+        "Block-E Seminar hall", 
+        "Block-D Seminar hall", 
+        "Block-C Seminar hall"
+    )
+    
+
+    block_menu.config(
+        bg="#f2f2f2", 
+        fg="black", 
+        font=("Arial", 11), 
+        indicatoron=True, 
+        bd=1, 
+        relief="solid"
+    )
+    block_menu["menu"].config(bg="#f2f2f2", font=("Arial", 11))
+    # block_menu.place(x=30, y=320, width=235, height=40)
+    block_menu.place(x=30, y=320, height=40)
+
+    # Date/Time Entry
+    time_entry = Entry(main_frame, font=("Arial", 12), width=25, bd=1, relief="solid", bg="#f2f2f2")
+    time_entry.insert(0, "2026/01/25 ( 12:00 PM)")
+    time_entry.place(x=30, y=380, height=40)
+
+    enrolled_frame = Frame(main_frame, bg="#f2f2f2", width=220, height=350, bd=1, relief="solid")
+    enrolled_frame.place(x=510, y=30)
+    
+    Label(enrolled_frame, text="Enrolled", font=("Arial", 14), bg="#f2f2f2").pack(pady=10)
+    
+    # List of names with bullet points
+    students = ["Nischal Shrestha", "Norman Singh", "Anurag Pandey", "Samir D.C"]
+    for student in students:
+        Label(enrolled_frame, text=f"•  {student}", font=("Arial", 11), bg="#f2f2f2", anchor="w").pack(fill="x", padx=20, pady=2)
+
+
+    join_btn = Button(
+        main_frame, 
+        text="Join Now", 
+        font=("Arial", 14, "bold"), 
+        bg="#23cff2", 
+        fg="white", 
+        width=15,
+        bd=0, 
+        cursor="hand2",
+        activebackground="#1eb6d4"
+    )
+    join_btn.place(x=300, y=480, height=35)
+
+    def on_close():
+        join_root.destroy()
+        root.deiconify()
+        
+    join_root.protocol("WM_DELETE_WINDOW", on_close)
+
 image_bg = Image.open("assects/dashboard.jpg")
 resize_bg =image_bg.resize((800, 600))
 final_bg = ImageTk.PhotoImage(resize_bg)
@@ -481,8 +630,8 @@ lbl.pack()
 
 button = Label(root,
                     text="Login",
-                    fg="white",bg="#72dae4", cursor="hand2",font=("Arial",16,"bold"))
-button.place(x=370,y=390)
+                    fg="white",bg="#72dae4", cursor="hand2",font=("Arial",16,"bold"),padx=20,pady=2)
+button.place(x=350,y=390)
 button.bind("<Button-1>", lambda e: login_page())
 
 root.mainloop()
