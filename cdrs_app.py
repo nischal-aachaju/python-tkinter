@@ -5,9 +5,7 @@ import sqlite3
 import hashlib
 
 
-# =============================================================
 #   DATABASE SETUP
-# =============================================================
 
 auth_conn = sqlite3.connect("userAuthUI.db")
 auth_cur = auth_conn.cursor()
@@ -77,9 +75,6 @@ app_cur.executemany(
 app_conn.commit()
 
 
-# =============================================================
-#   DATABASE HELPERS
-# =============================================================
 
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
@@ -156,9 +151,7 @@ def get_available_rooms():
     return [row[0] for row in app_cur.fetchall()]
 
 
-# =============================================================
 #   UI
-# =============================================================
 
 root = Tk()
 root.geometry("800x600")
@@ -346,8 +339,6 @@ def name_logo(frame):
     lbl_logo.place(x=28, y=10)
 
 
-# on_back is passed in from the dashboard's refresh_cards function.
-# Every joining_page call forwards it so the chain stays unbroken.
 def student_content(parent_frame, current_user, parent_root, doubt, on_back=None):
     doubt_id, posted_by, title, description, status, posted_at = doubt
 
@@ -442,13 +433,83 @@ def profile_page(name):
     profile_root.resizable(0, 0)
     root.withdraw()
     Navbar(profile_root, name)
-    Label(profile_root, text=f"User Profile: {name}", font=("Arial", 20, "bold")).pack(pady=20)
+    Label(profile_root, text="Your Posted Doubts", font=("Arial", 14), fg="gray", bg="#f2f2f2").pack(pady=(0, 10))
+
+    profile_root.configure(bg="#f2f2f2")
+
+    canvas = Canvas(profile_root, bg="#f2f2f2", width=760, height=430)
+    scrollbar = Scrollbar(profile_root, orient=VERTICAL, command=canvas.yview)
+    data_frame = Frame(canvas, bg="#f2f2f2")
+    data_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+    canvas.create_window((0, 0), window=data_frame, anchor="nw")
+    canvas.configure(yscrollcommand=scrollbar.set)
+    canvas.pack(side=LEFT, padx=(20, 0))
+    scrollbar.pack(side=LEFT, fill=Y)
+
+    def delete_doubt(doubt_id):
+        confirm = messagebox.askyesno(
+            "Delete Doubt",
+            "Are you sure you want to delete this doubt?\nThis will also remove all related participants, volunteers, and sessions.",
+            parent=profile_root
+        )
+        if not confirm:
+            return
+
+        app_cur.execute("DELETE FROM participants WHERE doubt_id = ?", (doubt_id,))
+        app_cur.execute("DELETE FROM volunteers WHERE doubt_id = ?", (doubt_id,))
+        app_cur.execute("DELETE FROM sessions WHERE doubt_id = ?", (doubt_id,))
+        app_cur.execute("DELETE FROM doubts WHERE id = ?", (doubt_id,))
+        app_conn.commit()
+
+        messagebox.showinfo("Deleted", "Doubt deleted successfully.", parent=profile_root)
+        load_doubts()
+
+    def load_doubts():
+        for w in data_frame.winfo_children():
+            w.destroy()
+
+        app_cur.execute(
+            "SELECT id, title, description, status, posted_at FROM doubts WHERE student_name = ? ORDER BY posted_at DESC",
+            (name,)
+        )
+        user_doubts = app_cur.fetchall()
+
+        if not user_doubts:
+            Label(data_frame, text="You haven't posted any doubts yet.",
+                  font=("Arial", 13), fg="gray", bg="#f2f2f2").pack(pady=40)
+            return
+
+        for doubt_id, title, description, status, posted_at in user_doubts:
+            card = Frame(data_frame, bg="#E1E9E5", width=730, height=120, bd=2, relief="groove")
+            card.pack_propagate(False)
+            card.pack(pady=8)
+
+            status_color = "#4CAF50" if status == "Open" else "#FF9800" if status == "Scheduled" else "#9E9E9E"
+
+            Label(card, text=title, font=("Arial", 12, "bold"), bg="#E1E9E5").place(x=15, y=10)
+
+            short_desc = description[:90] + "..." if len(description) > 90 else description
+            Label(card, text=short_desc, font=("Arial", 10), bg="#E1E9E5",
+                  justify="left", wraplength=480).place(x=15, y=38)
+
+            Label(card, text=f"Posted: {posted_at[:16]}", font=("Arial", 9), fg="gray", bg="#E1E9E5").place(x=15, y=88)
+
+            Label(card, text=f" {status} ", font=("Arial", 9, "bold"),
+                  bg=status_color, fg="white").place(x=580, y=10)
+
+            # Delete button
+            del_btn = Label(card, text="🗑 Delete", font=("Arial", 10, "bold"),
+                            bg="#e53935", fg="white", cursor="hand2", padx=8, pady=3,
+                            bd=1, relief="solid")
+            del_btn.place(x=580, y=80)
+            del_btn.bind("<Button-1>", lambda e, did=doubt_id: delete_doubt(did))
+
+    load_doubts()
+
     def on_close():
         profile_root.destroy()
         root.deiconify()
     profile_root.protocol("WM_DELETE_WINDOW", on_close)
-
-
 def post_page(name, on_back=None):
     post_root = Toplevel(root)
     post_root.title("Post")
@@ -484,7 +545,7 @@ def post_page(name, on_back=None):
         post_root.destroy()
         root.deiconify()
         if on_back:
-            on_back()          # ← triggers refresh_cards on the dashboard
+            on_back()          
     post_root.protocol("WM_DELETE_WINDOW", on_close)
 
 
@@ -522,7 +583,6 @@ def student_page(name):
             Label(data_frame, text="No doubts posted yet.", font=("Arial", 14),
                   bg="#f2f2f2", fg="gray").pack(pady=40)
 
-    # Pass refresh_cards so post_page calls it on close
     button = Label(student_frame, text="Post doubts here", fg="white", bg="#00bcd4",
                    cursor="hand2", font=("Arial", 12, "bold"), padx=5, pady=2)
     button.place(x=625, y=10)
@@ -673,13 +733,11 @@ def joining_page(prev_root, name, doubt_id, mode="join", on_back=None):
         join_root.destroy()
         prev_root.deiconify()
         if on_back:
-            on_back()          # ← triggers refresh_cards on the dashboard
+            on_back()          
     join_root.protocol("WM_DELETE_WINDOW", on_close)
 
 
-# =============================================================
 #   MAIN DASHBOARD
-# =============================================================
 
 image_bg = Image.open("assects/dashboard.png")
 resize_bg = image_bg.resize((800, 600))
