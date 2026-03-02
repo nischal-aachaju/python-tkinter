@@ -5,10 +5,15 @@ import sqlite3
 import hashlib
 
 
-#   DATABASE SETUP
+# ----------DATABASE SETUP----------------
 
 auth_conn = sqlite3.connect("userAuthUI.db")
 auth_cur = auth_conn.cursor()
+
+
+# ----------DATABASE TABLES----------------
+
+# Authentication table
 auth_cur.execute("""
     CREATE TABLE IF NOT EXISTS users (
         email             TEXT PRIMARY KEY,
@@ -20,9 +25,11 @@ auth_cur.execute("""
 """)
 auth_conn.commit()
 
+# Database of Application
 app_conn = sqlite3.connect("cdrs.db")
 app_cur = app_conn.cursor()
 
+# doubts table
 app_cur.execute("""
     CREATE TABLE IF NOT EXISTS doubts (
         id           INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -33,6 +40,8 @@ app_cur.execute("""
         posted_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
 """)
+
+# participants table
 app_cur.execute("""
     CREATE TABLE IF NOT EXISTS participants (
         id           INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -42,6 +51,8 @@ app_cur.execute("""
         UNIQUE(doubt_id, student_name)
     )
 """)
+
+# volunteers table
 app_cur.execute("""
     CREATE TABLE IF NOT EXISTS volunteers (
         id             INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -51,6 +62,8 @@ app_cur.execute("""
         UNIQUE(doubt_id, volunteer_name)
     )
 """)
+
+# sessions table
 app_cur.execute("""
     CREATE TABLE IF NOT EXISTS sessions (
         id           INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -61,6 +74,8 @@ app_cur.execute("""
         created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
 """)
+
+# rooms table
 app_cur.execute("""
     CREATE TABLE IF NOT EXISTS rooms (
         id           INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -68,39 +83,41 @@ app_cur.execute("""
         is_available INTEGER DEFAULT 1
     )
 """)
+
+# Insert default rooms # refrences from stackoverflow
 app_cur.executemany(
     "INSERT OR IGNORE INTO rooms (room_name) VALUES (?)",
     [("Block-E Seminar hall",), ("Block-D Seminar hall",), ("Block-C Seminar hall",)]
 )
 app_conn.commit()
 
-
-
+# password hashing using sha256 python Hashlib
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
+# function to get user
 def get_user(email):
     auth_cur.execute("SELECT * FROM users WHERE email = ?", (email,))
     return auth_cur.fetchone()
 
+# function to create user
 def create_user(email, name, password, role, security_password):
     auth_cur.execute("INSERT INTO users VALUES (?, ?, ?, ?, ?)",
                      (email, name, hash_password(password), role, security_password))
     auth_conn.commit()
 
+# function to update password
 def update_password(email, new_password):
     auth_cur.execute("UPDATE users SET password = ? WHERE email = ?",
                      (hash_password(new_password), email))
     auth_conn.commit()
 
+# function to post doubt
 def post_doubt(student_name, title, description):
     app_cur.execute("INSERT INTO doubts (student_name, title, description) VALUES (?, ?, ?)",
                     (student_name, title, description))
     app_conn.commit()
 
-def get_all_doubts():
-    app_cur.execute("SELECT * FROM doubts ORDER BY posted_at DESC")
-    return app_cur.fetchall()
 
 def update_doubt_status(doubt_id, status):
     app_cur.execute("UPDATE doubts SET status = ? WHERE id = ?", (status, doubt_id))
@@ -330,14 +347,12 @@ def Navbar(page_root, username):
         login_page()
     logout_logo.bind("<Button-1>", lambda e: do_logout())
 
-
 def name_logo(frame):
     avtar_image = Image.open("assects/question.png").resize((20, 20))
     avtar_imageTk = ImageTk.PhotoImage(avtar_image)
     lbl_logo = Label(frame, image=avtar_imageTk, bd=0)
     lbl_logo.image = avtar_imageTk
     lbl_logo.place(x=28, y=10)
-
 
 def student_content(parent_frame, current_user, parent_root, doubt, on_back=None):
     doubt_id, posted_by, title, description, status, posted_at = doubt
@@ -575,7 +590,7 @@ def student_page(name):
     def refresh_cards():
         for w in data_frame.winfo_children():
             w.destroy()
-        doubts = get_all_doubts()
+        doubts = app_cur.execute("SELECT * FROM doubts ORDER BY posted_at DESC")
         if doubts:
             for doubt in doubts:
                 student_content(data_frame, name, student_root, doubt, refresh_cards)
@@ -621,7 +636,7 @@ def teacher_page(name):
     def refresh_cards():
         for w in data_frame.winfo_children():
             w.destroy()
-        doubts = get_all_doubts()
+        doubts = app_cur.execute("SELECT * FROM doubts ORDER BY posted_at DESC")
         if doubts:
             for doubt in doubts:
                 teacher_content(data_frame, name, teacher_root, doubt, refresh_cards)
