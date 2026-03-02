@@ -453,6 +453,8 @@ def profile_page(name):
     profile_root.geometry("800x600")
     profile_root.resizable(0, 0)
     root.withdraw()
+    
+   
     Navbar(profile_root, name)
     Label(profile_root, text="Your Posted Doubts", font=("Arial", 14), fg="gray", bg="#f2f2f2").pack(pady=(0, 10))
 
@@ -488,6 +490,7 @@ def profile_page(name):
     def load_doubts():
         for w in data_frame.winfo_children():
             w.destroy()
+            
 
         app_cur.execute(
             "SELECT id, title, description, status, posted_at FROM doubts WHERE student_name = ? ORDER BY posted_at DESC",
