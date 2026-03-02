@@ -752,8 +752,8 @@ def joining_page(prev_root, name, doubt_id, mode="join", on_back=None):
     join_root.protocol("WM_DELETE_WINDOW", on_close)
 
 
-#   MAIN DASHBOARD
-
+#-------------------------MAIN DASHBOARD-------------------------
+#------background image------
 image_bg = Image.open("assects/dashboard.png")
 resize_bg = image_bg.resize((800, 600))
 final_bg = ImageTk.PhotoImage(resize_bg)
