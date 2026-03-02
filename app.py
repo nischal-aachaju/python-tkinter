@@ -5,9 +5,8 @@ import sqlite3
 import hashlib
 
 
-# =============================================================
-#   DATABASE SETUP
-# =============================================================
+
+#-------------------DATABASE SETUP-------------------
 
 auth_conn = sqlite3.connect("userAuthUI.db")
 auth_cur = auth_conn.cursor()
@@ -22,9 +21,14 @@ auth_cur.execute("""
 """)
 auth_conn.commit()
 
+
+# ----------DATABASE TABLES----------------
+
 app_conn = sqlite3.connect("cdrs.db")
 app_cur = app_conn.cursor()
 
+# Authentication table
+# doubts table
 app_cur.execute("""
     CREATE TABLE IF NOT EXISTS doubts (
         id           INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -35,6 +39,8 @@ app_cur.execute("""
         posted_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
 """)
+
+# participants table
 app_cur.execute("""
     CREATE TABLE IF NOT EXISTS participants (
         id           INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -44,6 +50,7 @@ app_cur.execute("""
         UNIQUE(doubt_id, student_name)
     )
 """)
+# volunteers table
 app_cur.execute("""
     CREATE TABLE IF NOT EXISTS volunteers (
         id             INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -53,6 +60,7 @@ app_cur.execute("""
         UNIQUE(doubt_id, volunteer_name)
     )
 """)
+# sessions table
 app_cur.execute("""
     CREATE TABLE IF NOT EXISTS sessions (
         id           INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -63,6 +71,7 @@ app_cur.execute("""
         created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
 """)
+# rooms table
 app_cur.execute("""
     CREATE TABLE IF NOT EXISTS rooms (
         id           INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -70,6 +79,8 @@ app_cur.execute("""
         is_available INTEGER DEFAULT 1
     )
 """)
+
+# Insert default rooms # refrences from stackoverflow
 app_cur.executemany(
     "INSERT OR IGNORE INTO rooms (room_name) VALUES (?)",
     [("Block-E Seminar hall",), ("Block-D Seminar hall",), ("Block-C Seminar hall",)]
@@ -77,27 +88,30 @@ app_cur.executemany(
 app_conn.commit()
 
 
-# =============================================================
-#   DATABASE HELPERS
-# =============================================================
 
+# password hashing using sha256 python Hashlib
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
+# function to get user
 def get_user(email):
     auth_cur.execute("SELECT * FROM users WHERE email = ?", (email,))
     return auth_cur.fetchone()
 
+
+# function to create user
 def create_user(email, name, password, role, security_password):
     auth_cur.execute("INSERT INTO users VALUES (?, ?, ?, ?, ?)",
                      (email, name, hash_password(password), role, security_password))
     auth_conn.commit()
 
+# function to update password
 def update_password(email, new_password):
     auth_cur.execute("UPDATE users SET password = ? WHERE email = ?",
                      (hash_password(new_password), email))
     auth_conn.commit()
 
+# function to post doubt 
 def post_doubt(student_name, title, description):
     app_cur.execute("INSERT INTO doubts (student_name, title, description) VALUES (?, ?, ?)",
                     (student_name, title, description))
@@ -156,9 +170,9 @@ def get_available_rooms():
     return [row[0] for row in app_cur.fetchall()]
 
 
-# =============================================================
-#   UI
-# =============================================================
+
+# -----------------------UI-----------------------
+
 
 root = Tk()
 root.geometry("800x600")
@@ -346,8 +360,6 @@ def name_logo(frame):
     lbl_logo.place(x=28, y=10)
 
 
-# on_back is passed in from the dashboard's refresh_cards function.
-# Every joining_page call forwards it so the chain stays unbroken.
 def student_content(parent_frame, current_user, parent_root, doubt, on_back=None):
     doubt_id, posted_by, title, description, status, posted_at = doubt
 
@@ -484,7 +496,7 @@ def post_page(name, on_back=None):
         post_root.destroy()
         root.deiconify()
         if on_back:
-            on_back()          # ← triggers refresh_cards on the dashboard
+            on_back()
     post_root.protocol("WM_DELETE_WINDOW", on_close)
 
 
@@ -522,13 +534,13 @@ def student_page(name):
             Label(data_frame, text="No doubts posted yet.", font=("Arial", 14),
                   bg="#f2f2f2", fg="gray").pack(pady=40)
 
-    # Pass refresh_cards so post_page calls it on close
+
     button = Label(student_frame, text="Post doubts here", fg="white", bg="#00bcd4",
                    cursor="hand2", font=("Arial", 12, "bold"), padx=5, pady=2)
     button.place(x=625, y=10)
     button.bind("<Button-1>", lambda e: post_page(name, refresh_cards))
 
-    refresh_cards()   # initial load
+    refresh_cards()  
 
     def on_close():
         student_root.destroy()
@@ -569,7 +581,7 @@ def teacher_page(name):
             Label(data_frame, text="No doubts posted yet.", font=("Arial", 14),
                   bg="#f2f2f2", fg="gray").pack(pady=40)
 
-    refresh_cards()   # initial load
+    refresh_cards()   
 
     def on_close():
         teacher_root.destroy()
@@ -673,13 +685,12 @@ def joining_page(prev_root, name, doubt_id, mode="join", on_back=None):
         join_root.destroy()
         prev_root.deiconify()
         if on_back:
-            on_back()          # ← triggers refresh_cards on the dashboard
+            on_back()
     join_root.protocol("WM_DELETE_WINDOW", on_close)
 
 
-# =============================================================
 #   MAIN DASHBOARD
-# =============================================================
+
 
 image_bg = Image.open("assects/dashboard.png")
 resize_bg = image_bg.resize((800, 600))
